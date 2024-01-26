@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="MecanumTeleOp", group="OpMode")
+@TeleOp(name="Second Comp", group="OpMode")
 public class MecanumTeleOp extends OpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -20,8 +20,12 @@ public class MecanumTeleOp extends OpMode {
     private DcMotor arm = null;
     private DcMotor pullup = null;
     private Servo toucan;
-    static final double TOUCAN_POS_CLOSE = 1;
-    static final double TOUCAN_POS_OPEN = .1;
+
+    private Servo drone;
+    static final double TOUCAN_POS_CLOSE = 0.2;
+    static final double TOUCAN_POS_OPEN = 0.6;
+    static final double DRONE_RESET = 0.5;
+    static final double DRONE_LAUNCH = 1;
 
 
 
@@ -40,6 +44,8 @@ public class MecanumTeleOp extends OpMode {
         pullup = hardwareMap.get(DcMotor.class, "pullup");
 
         toucan = hardwareMap.get(Servo.class, "toucan");
+
+        drone = hardwareMap.get(Servo.class, "drone");
 
 
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -141,6 +147,13 @@ public class MecanumTeleOp extends OpMode {
             toucan.setPosition(TOUCAN_POS_CLOSE);
         }
 
+        if(gamepad2.x){
+            drone.setPosition(DRONE_RESET);
+        }
+        else if(gamepad2.y){
+            drone.setPosition(DRONE_LAUNCH);
+        }
+
 
 
         // Show the elapsed game time and wheel power.
@@ -150,6 +163,7 @@ public class MecanumTeleOp extends OpMode {
         telemetry.addData("Dead wheel value forward/horizontal", "%4.2f, %4.2f", 1.0*leftFront.getCurrentPosition(), 1.0*rightFront.getCurrentPosition());
         telemetry.addData("Arm", "%4.2f", armPower);
         telemetry.addData("Claw", toucan.getPosition());
+        telemetry.addData("Drone", drone.getPosition());
         telemetry.update();
     }
 
