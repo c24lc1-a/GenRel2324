@@ -24,8 +24,9 @@ public class MecanumTeleOp extends OpMode {
     private Servo drone;
     static final double TOUCAN_POS_CLOSE = 0.2;
     static final double TOUCAN_POS_OPEN = 0.6;
-    static final double DRONE_RESET = 0.5;
+    static final double DRONE_RESET = 0.4;
     static final double DRONE_LAUNCH = 1;
+    static final double SLOW_MULTIPLIER = .5;
 
 
 
@@ -83,9 +84,14 @@ public class MecanumTeleOp extends OpMode {
         double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
         double lateral =  gamepad1.left_stick_x;
         double yaw     =  gamepad1.right_stick_x;
+        double multiplier = 1;
 
         // Combine the joystick requests for each axis-motion to determine each wheel's power.
         // Set up a variable for each drive wheel to save the power level for telemetry.
+        if (gamepad1.a) {
+            multiplier *= SLOW_MULTIPLIER;
+        }
+
         double leftFrontPower  = axial + lateral + yaw;
         double rightFrontPower = axial - lateral - yaw;
         double leftBackPower   = axial - lateral + yaw;
@@ -103,6 +109,11 @@ public class MecanumTeleOp extends OpMode {
             leftBackPower   /= max;
             rightBackPower  /= max;
         }
+
+        leftFrontPower  *= multiplier;
+        rightFrontPower *= multiplier;
+        leftBackPower   *= multiplier;
+        rightBackPower  *= multiplier;
 
         // This is test code:
         //
